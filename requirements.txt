@@ -1,0 +1,6 @@
+wheel
+tqdm
+numpy
+scipy
+pandas
+matplotlib
