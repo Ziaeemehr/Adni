@@ -14,7 +14,6 @@ class Adni(object):
         self.data_path = self.get_dataset_path()
         self.diagnosis = pd.read_csv(join(self.data_path, "subjects_diagnosis.csv"))
         self.groups = self.diagnosis["Diagnosis"].unique()
-        
 
     def __str__(self) -> str:
         return "ADNI dataset loader."
@@ -52,7 +51,7 @@ class Adni(object):
         #     "Temporal_Pole_Sup",
         #     "Temporal_Mid",
         # ]
-        lim_region = [
+        regions = [
             "Limbic",
             "Amygdala",
             "Vis_1",
@@ -62,7 +61,7 @@ class Adni(object):
         idxs = []
 
         for i in roi_names:
-            for j in lim_region:
+            for j in regions:
                 if i.find(j) != -1:
                     vec.append(i)
                     idxs.append(roi_names.index(i))
@@ -70,6 +69,157 @@ class Adni(object):
         df = pd.DataFrame({"limbic": vec, "idx": idxs})
         return df
 
+    def get_parietal(self, size=100):
+        #!TODO
+        roi_names = self.get_region_labels(size=size).tolist()
+        # regions = [
+        #     "Parietal",
+        #     "Postcentral",
+        #     "SupraMarginal",
+        #     "Angular",
+        #     "Precuneus",
+        # ]
+        
+        vec = []
+        idxs = []
+
+        for i in roi_names:
+            for j in regions:
+                if i.find(j) != -1:
+                    vec.append(i)
+                    idxs.append(roi_names.index(i))
+
+        df = pd.DataFrame({"parietal": vec, "idx": idxs})
+        return df
+
+
+    def get_occipital(self, size=100): #!TODO
+        roi_names = self.get_region_labels(size=size).tolist()
+        regions = [
+        ] #!TODO
+        
+        vec = []
+        idxs = []
+
+        for i in roi_names:
+            for j in regions:
+                if i.find(j) != -1:
+                    vec.append(i)
+                    idxs.append(roi_names.index(i))
+
+        df = pd.DataFrame({"occipital": vec, "idx": idxs})
+        return df
+
+
+    def get_central(self, size=100): #!TODO
+        '''get label and indices of central structures regions'''
+        roi_names = self.get_region_labels(size=size).tolist()
+        regions = [
+        ] #!TODO
+        
+        vec = []
+        idxs = []
+
+        for i in roi_names:
+            for j in regions:
+                if i.find(j) != -1:
+                    vec.append(i)
+                    idxs.append(roi_names.index(i))
+
+        df = pd.DataFrame({"central": vec, "idx": idxs})
+        return df
+
+
+    def frontal(self, size=100):
+        '''get label and indices of frontal structures regions'''
+        roi_names = self.get_region_labels(size=size).tolist()
+        regions = [
+        ] #!TODO
+        
+        vec = []
+        idxs = []
+        
+        for i in roi_names:
+            for j in regions:
+                if i.find(j) != -1:
+                    vec.append(i)
+                    idxs.append(roi_names.index(i))
+                    
+        df = pd.DataFrame({"frontal": vec, "idx": idxs})
+        return df
+
+    def get_temporal(self, size=100): #!TODO
+        '''get label and indices of temporal structures regions'''
+        roi_names = self.get_region_labels(size=size).tolist()
+        regions = [
+        ] #!TODO
+        
+        vec = []
+        idxs = []
+        
+        for i in roi_names:
+            for j in regions:
+                if i.find(j) != -1:
+                    vec.append(i)
+                    idxs.append(roi_names.index(i))
+                    
+        df = pd.DataFrame({"temporal": vec, "idx": idxs})
+        return df        
+
+    def get_insulacingulate(self, size=100): #!TODO
+        '''get label and indices of insula and cingulate structures regions'''
+        roi_names = self.get_region_labels(size=size).tolist()
+        regions = [
+        ] #!TODO
+        
+        vec = []
+        idxs = []
+        
+        for i in roi_names:
+            for j in regions:
+                if i.find(j) != -1:
+                    vec.append(i)
+                    idxs.append(roi_names.index(i))
+                    
+        df = pd.DataFrame({"insulacingulate": vec, "idx": idxs})
+        return df
+    
+    def get_DMN(self, size=100): #!TODO
+        '''get label and indices of default mode network structures regions'''
+        roi_names = self.get_region_labels(size=size).tolist()
+        regions = [
+        ] #!TODO
+        
+        vec = []
+        idxs = []
+        
+        for i in roi_names:
+            for j in regions:
+                if i.find(j) != -1:
+                    vec.append(i)
+                    idxs.append(roi_names.index(i))
+                    
+        df = pd.DataFrame({"DMN": vec, "idx": idxs})
+        return df
+    
+    def get_cingulate(self, size=100): #!TODO
+        '''get label and indices of cingulate structures regions'''
+        roi_names = self.get_region_labels(size=size).tolist()
+        regions = [
+        ] #!TODO
+        
+        vec = []
+        idxs = []
+        
+        for i in roi_names:
+            for j in regions:
+                if i.find(j) != -1:
+                    vec.append(i)
+                    idxs.append(roi_names.index(i))
+                    
+        df = pd.DataFrame({"cingulate": vec, "idx": idxs})
+        return df
+    
     def find_dirs(self, path, exclude_pattern=None):
         """
         find directories in a given path excluding hidden directories and given list of pattern
@@ -156,17 +306,19 @@ class Adni(object):
                     print(directory, end=", ")
 
         return complete_files
-    
-    def get_diagnosis(self, subject:str):
-        '''Looks up the diagnosis of a given subject.'''
+
+    def get_diagnosis(self, subject: str):
+        """Looks up the diagnosis of a given subject."""
         # check if the subject is in the dataset
         if subject not in self.diagnosis["Subject"].values:
             raise ValueError(f"Subject {subject} is not in the dataset.")
-        return self.diagnosis[self.diagnosis["Subject"] == subject]["Diagnosis"].values[0]
+        return self.diagnosis[self.diagnosis["Subject"] == subject]["Diagnosis"].values[
+            0
+        ]
 
-    def get_pet_mask(self, subject:str, size:int=100, modality="AV45"):
-        '''Load PET mask for a given subject and size
-        
+    def get_pet_mask(self, subject: str, size: int = 100, modality="AV45"):
+        """Load PET mask for a given subject and size
+
         Parameters
         ----------
         subject: int
@@ -178,8 +330,8 @@ class Adni(object):
         Returns
         -------
         mask: np.array
-        
-        '''
+
+        """
         path = Adni().get_dataset_path()
         filename = join(
             path,
@@ -188,10 +340,10 @@ class Adni(object):
         mask = np.loadtxt(filename)
         return np.array([float(m) for m in mask])
 
-    def get_weights(self, subject:str, size:int=100, normalize:bool=True):
-        '''
+    def get_weights(self, subject: str, size: int = 100, normalize: bool = True):
+        """
         Load connectome for a given subject and size
-        
+
         Parameters
         ----------
         subject: int
@@ -200,13 +352,13 @@ class Adni(object):
             size of the atlas, 100 or 400
         normalize: bool
             normalize the connectome matrix
-            
+
         Returns
         -------
         SC: np.array
             connectome matrix
-            
-        '''
+
+        """
         path = Adni().get_dataset_path()
         filename = join(
             path, f"{subject}/dwi/weights_Schaefer2018_{size}Parcels_7Networks.txt"
@@ -218,9 +370,9 @@ class Adni(object):
         return SC
 
     def get_fmri(self, subject: str, size: int = 100, zscore: bool = False):
-        ''' 
+        """
         get fMRI data for a given subject and size
-        
+
         Parameters
         ----------
         subject: int
@@ -234,7 +386,7 @@ class Adni(object):
         -------
         fmri: np.array [n_regions, n_timepoints]
             fMRI data
-        '''
+        """
         path = Adni().get_dataset_path()
         filename = join(
             path,
